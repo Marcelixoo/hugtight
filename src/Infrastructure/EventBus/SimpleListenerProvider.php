@@ -9,7 +9,8 @@ use Psr\EventDispatcher\ListenerProviderInterface;
 
 final class SimpleListenerProvider implements ListenerProviderInterface
 {
-    private $listenersByEvents;
+    /** @var array */
+    private $listenersByEventName = [];
 
     public function __construct(array $listenersPerEvent)
     {
@@ -19,10 +20,10 @@ final class SimpleListenerProvider implements ListenerProviderInterface
             Assert::isArray($listenersForEvent);
             Assert::classExists($eventClass);
 
-            foreach ($listenersForEvent as $listenersForEvent) {
-                Assert::isCallable($listenersForEvent);
+            foreach ($listenersForEvent as $listener) {
+                Assert::isCallable($listener);
 
-                $this->listenersByEvents[$eventClass][] = $listenersForEvent;
+                $this->$listenersByEventName[$eventClass][] = $listenersForEvent;
             }
         }
     }
@@ -31,8 +32,8 @@ final class SimpleListenerProvider implements ListenerProviderInterface
     {
         $eventClass = get_class($event);
 
-        if (array_key_exists($eventClass, $this->listenersByEvents)) {
-            return $this->listenersByEvents[$eventClass];
+        if (array_key_exists($eventClass, $this->$listenersByEventName)) {
+            return $this->$listenersByEventName[$eventClass];
         }
 
         return [];
