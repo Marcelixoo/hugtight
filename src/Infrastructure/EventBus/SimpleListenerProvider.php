@@ -23,7 +23,7 @@ final class SimpleListenerProvider implements ListenerProviderInterface
             foreach ($listenersForEvent as $listener) {
                 Assert::isCallable($listener);
 
-                $this->$listenersByEventName[$eventClass][] = $listenersForEvent;
+                $this->$listenersByEventName[$eventClass][] = $listener;
             }
         }
     }
